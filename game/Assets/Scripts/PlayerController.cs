@@ -39,6 +39,11 @@ public class PlayerController : MonoBehaviour
                movingTo = selected.neighbors[2];
            else if (Input.GetKeyDown(KeyCode.D)) 
            	   movingTo = selected.neighbors[3];
+           else if (Input.GetKeyDown(KeyCode.Return)) {
+               foreach (var d in selected.neighbors) {
+                if (d) d.isLocked = false;
+               }
+           }
 
            if (Input.anyKeyDown && !movingTo.isLocked){ 
                moving = true;
