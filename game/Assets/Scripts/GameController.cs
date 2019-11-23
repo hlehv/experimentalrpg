@@ -11,30 +11,41 @@ public class GameController : MonoBehaviour
     public PlayerController player;
     public EnemyController enemy;
     public int currentPlayer;
-    public int totalPlayers;
     public GameObject deadText;
     public GameObject winText;
+    public GameObject endTurnButton;
 
-    void youded() 
+    void PlayerDeath() 
     {
         deadText.SetActive(true);
     }
-    void youween()
+
+    void PlayerWin()
     {
         winText.SetActive(true);
     }
 
     void enemyAttack()
     {
-        float damage = (float)(enemy.enemyTurn());
-        player.health = player.health - damage;
-        IncrementCurrentPlayer();
+        float damage;
+        if ((damage = (float)(enemy.enemyTurn())) < 0)
+        {
+
+        }
+        else
+        {
+            player.health = player.health - damage;
+            IncrementCurrentPlayer();
+            enemy.Reset();
+        }
+
     }
 
+    //player attack
     void playerAttack()
     {
         float damage;
-        if ((damage = (float)player.playerTurn())< 0)
+        if ((damage = (float)player.playerTurn()) < 0)
         {
 
         }
@@ -42,38 +53,49 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("Damage: " + damage);
             enemy.health = enemy.health - damage;
-            IncrementCurrentPlayer();
-            player.Reset();
+            player.ResetDamage();
         }
     }
 
-    void IncrementCurrentPlayer()
-    {
-        if (currentPlayer == 0)
-        {
+
+    //increments the current player
+    void IncrementCurrentPlayer() {
+        if (currentPlayer == 0) {
             currentPlayer = 1;
+            endTurnButton.SetActive(false);
         }
-        else
-        {
+        else {
             currentPlayer = 0;
+            endTurnButton.SetActive(true);
         }
     }
 
 
     void Start()
     {
+        endTurnButton.GetComponent<Button>().onClick.RemoveAllListeners();
+        endTurnButton.GetComponent<Button>().onClick.AddListener(EndPlayerTurn);
     }
+
+
+    void EndPlayerTurn()
+    {
+        IncrementCurrentPlayer();
+        player.Reset();
+    }
+
+
 
     // Update is called once per frame
     void Update()
     {
         if (player.health <= 0)
         {
-            youded();
+            PlayerDeath();
         }
         else if(enemy.health <= 0)
         {
-            youween();
+            PlayerWin();
         }
         else
         {

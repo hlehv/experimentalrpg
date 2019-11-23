@@ -12,10 +12,13 @@ public class PlayerController : MonoBehaviour
     public GameObject healthbar;
     Transform healthbartrans;
     float width;
+    float originalx;
     public int index;
     public double attackDamage;
     bool beginningOfTurn;
-
+    bool canAttack;
+    public int anam;
+    public int MAXANAM;
 
     // Start is called before the first frame update
 
@@ -39,7 +42,7 @@ public class PlayerController : MonoBehaviour
             for (int i = 0; i < AttackList.Count; i++)
             {
 
-                AttackList[i] = Instantiate(AttackList[i], new Vector3((i + 1 - middle) * 5.0f, -5, 0), Quaternion.identity);
+                AttackList[i] = Instantiate(AttackList[i], new Vector3((i + 1 - middle) * 6.0f, -6.5f, 0), Quaternion.identity);
             }
             beginningOfTurn = false;
         }
@@ -53,19 +56,27 @@ public class PlayerController : MonoBehaviour
     {
         beginningOfTurn = true;
         attackDamage = -1;
+        canAttack = true;
+        anam = MAXANAM;
     }
 
-
+    public void ResetDamage()
+    {
+        attackDamage = -1;
+        canAttack = true;
+    }
 
     void Start()
     {
         beginningOfTurn = true;
+        canAttack = true;
         healthbartrans = healthbar.transform;
         width = healthbartrans.localScale.x;
+        originalx = healthbartrans.localPosition.x;
         attackDamage = -1;
         //testing
         playerTurn();
-
+        anam = MAXANAM;
     }
 
     // Update is called once per frame
@@ -75,6 +86,9 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 scalevector = new Vector3(width * (health / 100.0f), healthbartrans.localScale.y, healthbartrans.localScale.z);
             healthbartrans.localScale = scalevector;
+            float diff = Mathf.Abs(width - (width * (health / 100.0f)));
+            Vector3 positionVector = new Vector3((originalx - 3.7f*diff), healthbartrans.localPosition.y, healthbartrans.localPosition.z);
+            healthbartrans.localPosition = positionVector;
         }
         else
         {
@@ -82,20 +96,37 @@ public class PlayerController : MonoBehaviour
             healthbartrans.localScale = scalevector;
         }
 
-
-
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+            StartCoroutine(mouseClickCoroutine());
+        }
+    }
 
-            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
-            if (hit.collider != null && hit.collider.gameObject.GetComponent<AttackContent>() != null)
+    IEnumerator mouseClickCoroutine() {
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+
+        RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+        if ((hit.collider != null && hit.collider.gameObject.GetComponent<AttackContent>() != null) && canAttack)
+        {
+            if (anam >= hit.collider.gameObject.GetComponent<AttackContent>().anamCost)
             {
+                Debug.Log("anam" + anam);
+                Debug.Log("Cost anam cost" + hit.collider.gameObject.GetComponent<AttackContent>().anamCost);
+                canAttack = false;
+                yield return new WaitForSeconds(.0000001f);
                 Debug.Log(hit.collider.gameObject.name);
+                AudioSource audioSource = this.GetComponent<AudioSource>();
+                audioSource.Play();
                 attackDamage = hit.collider.gameObject.GetComponent<AttackContent>().damage;
+                anam = anam - hit.collider.gameObject.GetComponent<AttackContent>().anamCost;
+            }
+            else
+            {
+                Debug.Log("Can't make attack, anam too low");
             }
         }
     }
+
 }
 
