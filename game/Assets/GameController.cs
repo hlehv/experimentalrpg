@@ -14,6 +14,8 @@ public class GameController : MonoBehaviour
     public int totalPlayers;
     public GameObject deadText;
     public GameObject winText;
+    public Transform pfDamagePopup;
+
 
     void youded() 
     {
@@ -28,6 +30,7 @@ public class GameController : MonoBehaviour
     {
         float damage = (float)(enemy.enemyTurn());
         player.health = player.health - damage;
+        DamagePopup.Create(pfDamagePopup, player.transform.position, (int)damage);
         IncrementCurrentPlayer();
     }
 
@@ -42,6 +45,7 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("Damage: " + damage);
             enemy.health = enemy.health - damage;
+            DamagePopup.Create(pfDamagePopup, enemy.transform.position, (int)damage);
             IncrementCurrentPlayer();
             player.Reset();
         }
