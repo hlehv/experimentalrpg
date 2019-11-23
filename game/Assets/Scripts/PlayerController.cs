@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     bool canAttack;
     public int anam;
     public int MAXANAM;
+    public ManaBall manaBallPrefab;
+    List<ManaBall> manaBalls;
 
     // Start is called before the first frame update
 
@@ -68,6 +70,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        manaBalls = new List<ManaBall>();
         beginningOfTurn = true;
         canAttack = true;
         healthbartrans = healthbar.transform;
@@ -77,11 +80,46 @@ public class PlayerController : MonoBehaviour
         //testing
         playerTurn();
         anam = MAXANAM;
+
+        //setup mana balls
+        for (int i = 0; i < MAXANAM; i++)
+        {
+            if (i > anam)
+            {
+                manaBallPrefab.isActive = false;
+            }
+            else
+            {
+                manaBallPrefab.isActive = true;
+            }
+
+            ManaBall newmanaBall = Instantiate(manaBallPrefab, new Vector3(-15, 8 - 3*i), Quaternion.identity);
+            manaBalls.Add(newmanaBall);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        //setup mana balls
+        for (int i = 0; i < manaBalls.Count; i++)
+        {
+            Debug.Log("anam" + anam);
+            Debug.Log("i" + i);
+            if (i >= anam)
+            {
+                manaBalls[i].isActive = false;
+                Debug.Log("Changing activeness");
+            }
+            else
+            {
+                manaBalls[i].isActive = true;
+            }
+
+        }
+
+
         if (health >= 0)
         {
             Vector3 scalevector = new Vector3(width * (health / 100.0f), healthbartrans.localScale.y, healthbartrans.localScale.z);
@@ -111,8 +149,6 @@ public class PlayerController : MonoBehaviour
         {
             if (anam >= hit.collider.gameObject.GetComponent<AttackContent>().anamCost)
             {
-                Debug.Log("anam" + anam);
-                Debug.Log("Cost anam cost" + hit.collider.gameObject.GetComponent<AttackContent>().anamCost);
                 canAttack = false;
                 yield return new WaitForSeconds(.0000001f);
                 Debug.Log(hit.collider.gameObject.name);
