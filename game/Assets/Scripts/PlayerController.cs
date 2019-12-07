@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     public float health;
     public List<AttackContent> AttackList;
+    public List<AttackContent> totalAttackList;
     public GameObject healthbar;
     Transform healthbartrans;
     float width;
@@ -21,30 +22,42 @@ public class PlayerController : MonoBehaviour
     public int MAXANAM;
     public ManaBall manaBallPrefab;
     List<ManaBall> manaBalls;
+    public bool isTurn;
+    public int ATTACKLISTSIZE;
 
     // Start is called before the first frame update
 
     public double playerTurn()
     {
-        /*
-     * Instantiate - this is how you take a unity object thing and put it into the scene
-     * Unity UI - button
-     * something involving instantiating a unity UI button...
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     */
         int size = AttackList.Count;
-        float middle = (size + 1)/ 2.0f;
         if (beginningOfTurn)
         {
             for (int i = 0; i < AttackList.Count; i++)
             {
+                if (AttackList[i] != null && AttackList[i].gameObject.scene.name != null)
+                {
+                    Debug.Log("destroying" + AttackList[i]);
+                    Destroy(AttackList[i].gameObject);
+                }
+            }
+            AttackList.Clear();
+            for (int i = 0; i < ATTACKLISTSIZE; i++)
+            {
+                int j = Random.Range(0, totalAttackList.Count);
+                AttackList.Add(totalAttackList[j]);
+            }
+            float middle = (ATTACKLISTSIZE + 1) / 2.0f;
+            for (int i = 0; i < ATTACKLISTSIZE; i++)
+            {
 
-                AttackList[i] = Instantiate(AttackList[i], new Vector3((i + 1 - middle) * 6.0f, -6.5f, 0), Quaternion.identity);
+                AttackContent tempAttack = Instantiate(AttackList[i], new Vector3((i + 1 - middle) * 6.0f, -6.5f, 0), Quaternion.identity);
+                Debug.Log("scene name" + gameObject.scene.name);
+                if (AttackList[i].gameObject.scene.name != null)
+                {
+                    Debug.Log("destroying" + AttackList[i]);
+                    Destroy(AttackList[i].gameObject);
+                }
+                AttackList[i] = tempAttack;
             }
             beginningOfTurn = false;
         }
@@ -93,7 +106,7 @@ public class PlayerController : MonoBehaviour
                 manaBallPrefab.isActive = true;
             }
 
-            ManaBall newmanaBall = Instantiate(manaBallPrefab, new Vector3(-15, 8 - 3*i), Quaternion.identity);
+            ManaBall newmanaBall = Instantiate(manaBallPrefab, new Vector3(-16.4f, 6.55f - 2.1f*i), Quaternion.identity);
             manaBalls.Add(newmanaBall);
         }
     }
@@ -105,12 +118,9 @@ public class PlayerController : MonoBehaviour
         //setup mana balls
         for (int i = 0; i < manaBalls.Count; i++)
         {
-            Debug.Log("anam" + anam);
-            Debug.Log("i" + i);
             if (i >= anam)
             {
                 manaBalls[i].isActive = false;
-                Debug.Log("Changing activeness");
             }
             else
             {
@@ -147,7 +157,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
         if ((hit.collider != null && hit.collider.gameObject.GetComponent<AttackContent>() != null) && canAttack)
         {
-            if (anam >= hit.collider.gameObject.GetComponent<AttackContent>().anamCost)
+            if (anam >= hit.collider.gameObject.GetComponent<AttackContent>().anamCost && isTurn)
             {
                 canAttack = false;
                 yield return new WaitForSeconds(.0000001f);
@@ -155,7 +165,13 @@ public class PlayerController : MonoBehaviour
                 AudioSource audioSource = this.GetComponent<AudioSource>();
                 audioSource.Play();
                 attackDamage = hit.collider.gameObject.GetComponent<AttackContent>().damage;
+                Debug.Log("reducing anam");
                 anam = anam - hit.collider.gameObject.GetComponent<AttackContent>().anamCost;
+                if (hit.collider.gameObject.scene.name != null)
+                {
+                    Debug.Log("destroying" + hit.collider.gameObject);
+                    Destroy(hit.collider.gameObject);
+                }
             }
             else
             {

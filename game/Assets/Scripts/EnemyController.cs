@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     Transform healthbartrans;
     float width;
     float originalx;
+    public float ENEMYWAITTIME;
     double attackDamage; //shitty way :(
                          // Start is called before the first frame update
     bool canAttack;
@@ -32,12 +33,14 @@ public class EnemyController : MonoBehaviour
         if (canAttack)
         {
             canAttack = false;
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(ENEMYWAITTIME);
             int size = AttackList.Count;
             System.Random rnd = new System.Random();
             int index = rnd.Next(0, size);
             AttackContent chosen = AttackList[index];
             attackDamage = chosen.getDamage();
+            AudioSource audioSource = this.GetComponent<AudioSource>();
+            audioSource.Play();
         }
     }
 

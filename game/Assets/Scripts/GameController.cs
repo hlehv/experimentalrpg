@@ -44,6 +44,7 @@ public class GameController : MonoBehaviour
     //player attack
     void playerAttack()
     {
+        player.isTurn = true;
         float damage;
         if ((damage = (float)player.playerTurn()) < 0)
         {
@@ -63,6 +64,7 @@ public class GameController : MonoBehaviour
         if (currentPlayer == 0) {
             currentPlayer = 1;
             endTurnButton.SetActive(false);
+            player.isTurn = false;
         }
         else {
             currentPlayer = 0;
@@ -112,16 +114,3 @@ public class GameController : MonoBehaviour
     }
 }
 
-
-/*
- * Instantiate - this is how you take a unity object thing and put it into the scene
- * Unity UI - button
- * something involving instantiating a unity UI button...
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- */
