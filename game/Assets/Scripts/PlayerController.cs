@@ -31,13 +31,13 @@ public class PlayerController : MonoBehaviour
            	}
        }
        else{
-           if (Input.GetKeyDown(KeyCode.W))
+           if (Input.GetKeyDown(KeyCode.UpArrow))
                movingTo = selected.neighbors[0];
-           else if (Input.GetKeyDown(KeyCode.S)) 
+           else if (Input.GetKeyDown(KeyCode.DownArrow)) 
                movingTo = selected.neighbors[1];
-           else if (Input.GetKeyDown(KeyCode.A)) 
+           else if (Input.GetKeyDown(KeyCode.LeftArrow)) 
                movingTo = selected.neighbors[2];
-           else if (Input.GetKeyDown(KeyCode.D)) 
+           else if (Input.GetKeyDown(KeyCode.RightArrow)) 
            	   movingTo = selected.neighbors[3];
            else if (Input.GetKeyDown(KeyCode.Return)) {
                foreach (var d in selected.neighbors) {

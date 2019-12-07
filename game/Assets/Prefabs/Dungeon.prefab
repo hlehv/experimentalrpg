@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 9030621079994910693}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.11, y: -1.44, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -69,7 +69,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c803e4041267c4769994ee5df2bfed8a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 662744b0452554f2da23589eb5b9bc86, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,6 +98,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   isLocked: 0
-  unlockedDungeon: {fileID: 21300000, guid: 0a7fabc3eb94944c78432e2601fc8908, type: 3}
-  lockedDungeon: {fileID: 21300000, guid: c803e4041267c4769994ee5df2bfed8a, type: 3}
+  unlockedDungeon: {fileID: 21300000, guid: 662744b0452554f2da23589eb5b9bc86, type: 3}
+  lockedDungeon: {fileID: 21300000, guid: 22e4bb5e7c03d42eea724ed91a02aa19, type: 3}
   sr: {fileID: 0}
